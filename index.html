@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SORGO | Drop Lab</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Inter:wght@300;400;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="intro-screen">
+        <div class="compuerta izquierda"></div>
+        <div class="compuerta derecha"></div>
+        
+        <div class="intro-content">
+            <h1 class="logo-intro">SORGO</h1>
+
+            <video id="video-intro" src="img/gojo_eyes.mp4" autoplay muted playsinline></video>
+            
+            <div class="loader-container">
+                <div class="loader-bar" id="barra-progreso"></div>
+                <span class="loader-text">C A R G A N D O . D R O P</span>
+            </div>
+        </div>
+    </div>
+
+<div id="shop-content">
+        <header id="main-header">
+            <div class="logo">SORGO<span>.</span></div>
+            <nav>
+                <a href="#productos">Drops</a>
+                <button id="btn-carrito-toggle">Pedido (<span id="contador-carrito">0</span>)</button>
+            </nav>
+        </header>
+
+        <main class="container">
+            <section class="productos-seccion" id="productos">
+                <h2 class="section-title">Drop 01 / Colección Invierno</h2>
+                
+                <div class="productos-grid" id="contenedor-productos">
+                    
+                    <div class="producto-card tarjeta-custom">
+                        <div class="custom-badge">LAB SERVICE</div>
+                        <h3>TU PROPIA IDEA</h3>
+                        <p class="descripcion-custom">Sube tu diseño, logo o ilustración de anime favorita. Lo sublimamos con definición premium en playeras, tazas o cuadros.</p>
+                        <div class="form-custom">
+                            <input type="text" id="idea-cliente" placeholder="¿Qué personaje o frase quieres?">
+                            <button class="btn-agregar btn-custom-action" onclick="agregarDisenoPersonalizado()">Iniciar Pedido Especial</button>
+                        </div>
+                    </div>
+
+                    </div>
+            </section>
+
+            <aside class="carrito-panel">
+                <div class="carrito-header">
+                    <h2>Tu Pedido</h2>
+                </div>
+                <div id="items-carrito" class="items-carrito">
+                    </div>
+                <div class="carrito-footer">
+                    <div class="total-container">
+                        <span>Total:</span>
+                        <span class="total-precio">$<span id="precio-total">0</span> MXN</span>
+                    </div>
+                    <button id="pagar-btn" class="btn-checkout">Proceder al Pago</button>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <div id="modal-visor" class="modal">
+        <span class="cerrar-modal">&times;</span>
+        <div class="contenido-modal">
+            <div id="visor-media"></div>
+            <div class="info-visor">
+                <h2 id="titulo-visor"></h2>
+                <p>Detalles de sublimación en alta resolución - SORGO.LAB</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
