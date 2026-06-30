@@ -195,36 +195,6 @@ function actualizarInterfaz() {
     contador.innerText = totalItems;
     contador.classList.add('pop-anim');
     setTimeout(() => contador.classList.remove('pop-anim'), 200);
-
-    // --- CORRECCIÓN INTEGRADA PARA PAYPAL ---
-    // Si hay productos en el carrito y todavía existe el botón verde viejo, lo cambiamos por el de PayPal
-    if (carrito.length > 0 && document.getElementById('pagar-btn')) {
-        inicializarBotonesPayPal();
-    }
-}
-
-function actualizarInterfaz() {
-    const lista = document.getElementById('items-carrito');
-    const contador = document.getElementById('contador-carrito');
-    lista.innerHTML = '';
-    let total = 0;
-    
-    carrito.forEach(p => {
-        total += (p.precio * p.cantidad);
-        lista.innerHTML += `
-            <div class="item-en-carrito">
-                <span>${p.nombre} (x${p.cantidad})</span>
-                <span>$${p.precio * p.cantidad}</span>
-            </div>`;
-    });
-    
-    document.getElementById('precio-total').innerText = total;
-    
-    // Animación y conteo del botón superior del carrito
-    let totalItems = carrito.reduce((acc, p) => acc + p.cantidad, 0);
-    contador.innerText = totalItems;
-    contador.classList.add('pop-anim');
-    setTimeout(() => contador.classList.remove('pop-anim'), 200);
 }
 
 // --- 6. SERVICIO PERSONALIZADO ---
@@ -241,25 +211,17 @@ window.agregarDisenoPersonalizado = () => {
 
 // --- 7. INTEGRACIÓN DE PASARELA DE PAGO REAL CON PAYPAL ---
 
-// Esta función se encarga de pintar los botones oficiales de PayPal adentro del carrito
 function inicializarBotonesPayPal() {
-    // Limpiamos el contenedor del botón por si acaso para que no se duplique
-    const contenedorBoton = document.getElementById('pagar-btn');
+    const contenedorBoton = document.getElementById('paypal-button-container');
     if (!contenedorBoton) return;
 
-    // Cambiamos el botón viejo por el contenedor oficial de PayPal
-    contenedorBoton.outerHTML = `<div id="paypal-button-container" style="margin-top: 15px; z-index: 10;"></div>`;
-
     paypal.Buttons({
-        // Configuración del diseño del botón para que combine con la estética de SORGO
         style: {
             layout: 'vertical',
-            color:  'black', // Negro premium para mantener la vibra oscura
+            color:  'black',
             shape:  'rect',
             label:  'paypal'
         },
-
-        // 1. Se ejecuta cuando el cliente le da clic al botón de PayPal
         createOrder: function(data, actions) {
             let totalCompra = parseFloat(document.getElementById('precio-total').innerText);
             
@@ -268,7 +230,6 @@ function inicializarBotonesPayPal() {
                 return false;
             }
 
-            // Le pasamos el total exacto del carrito a la ventanita de PayPal
             return actions.order.create({
                 purchase_units: [{
                     amount: {
@@ -279,21 +240,14 @@ function inicializarBotonesPayPal() {
                 }]
             });
         },
-
-        // 2. Se ejecuta en automático cuando el banco autoriza el pago del cliente
         onApprove: function(data, actions) {
             return actions.order.capture().then(function(detalles) {
-                // Generamos el código de orden interno único al azar para tu control
                 const numeroAleatorio = Math.floor(1000 + Math.random() * 9000);
                 const codigoOrden = `SRG-${numeroAleatorio}`;
-                
-                // Obtenemos el nombre del comprador que tiene registrado en su PayPal
                 const nombreComprador = detalles.payer.name.given_name;
 
-                // Mostramos el ticket de éxito con su código único en la pantalla
                 alert(`¡PAGO PROCESADO CON ÉXITO, ${nombreComprador.toUpperCase()}! ⚡\n\nTu orden ha sido registrada.\nCódigo de Pedido: #${codigoOrden}\n\nGuardaremos tu diseño y productos en nuestro sistema. ¡Gracias por confiar en SORGO.LAB!`);
 
-                // Vaciamos el carrito de la tienda y cerramos el panel en el cel si estaba abierto
                 carrito = [];
                 actualizarInterfaz();
                 
@@ -302,24 +256,12 @@ function inicializarBotonesPayPal() {
                 }
             });
         },
-
-        // En caso de que ocurra un error con la tarjeta o fondos del cliente
         onError: function(err) {
-            console.error("Error en la pasarela de PayPal:", err);
-            alert("Hubo un problema al procesar tu pago con PayPal. Verifica tus datos e intenta de nuevo.");
+            console.error("Error en PayPal:", err);
+            alert("Hubo un problema al procesar tu pago con PayPal.");
         }
     }).render('#paypal-button-container');
 }
-
-// Modificamos ligeramente la actualización de la interfaz para que vigile los botones
-const funcionActualizarInterfazVieja = actualizarInterfaz;
-actualizarInterfaz = function() {
-    funcionActualizarInterfazVieja();
-    // Si el usuario añade cosas y no se han creado los botones, los inicializamos
-    if (!document.getElementById('paypal-button-container') && carrito.length > 0) {
-        inicializarBotonesPayPal();
-    }
-};
 
 // --- 8. FUNCIÓN PARA ABRIR/CERRAR EL CARRITO EN CELULAR ---
 window.toggleCarrito = () => {
@@ -358,4 +300,5 @@ window.addEventListener('DOMContentLoaded', () => {
     controlarIntro();
     mostrarProductos();
     habilitarTouchParaCelular();
+    inicializarBotonesPayPal(); // <--- Agregamos esta línea aquí para que cargue los botones desde el inicio de forma segura
 });
