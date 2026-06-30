@@ -47,7 +47,7 @@ const productos = [
         nombre: "Playera Chainsaw Man | Denji & Makima", 
         categoria: "Playeras Premium", 
         precio: 599, 
-        imgFrente: "img/chainsaw.jpeg", 
+        imgFrente: "img/Chainsaw Frente.png", 
         imgReverso: "img/Chainsaw Reverso.png", 
         esVideo: false 
     },
@@ -65,7 +65,7 @@ const productos = [
         nombre: "Playera Invincible | All-Characters Drop", 
         categoria: "Playeras Premium", 
         precio: 649, 
-        imgFrente: "img/invencible.jpg", 
+        imgFrente: "img/Invincible frente.png", 
         imgReverso: "img/invencible 2.jpg", 
         esVideo: false 
     },
@@ -94,6 +94,15 @@ const productos = [
         precio: 450, 
         imgFrente: "img/marco.jpg", 
         imgReverso: "img/marco.jpg", 
+        esVideo: false 
+    },
+    { 
+        id: 6, 
+        nombre: "Playera DANDADAN | All-Characthers Drop ", 
+        categoria: "Playeras premium", 
+        precio: 450, 
+        imgFrente: "img/Dandan frente.png", 
+        imgReverso: "img/Dadan Reverso.png", 
         esVideo: false 
     }
 ];
