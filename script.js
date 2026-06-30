@@ -173,13 +173,35 @@ document.querySelector('.cerrar-modal').onclick = () => {
 };
 
 // --- 5. LÓGICA DEL CARRITO DE COMPRAS ---
-window.alCarrito = (id) => {
-    const item = productos.find(p => p.id === id);
-    const enCarrito = carrito.find(p => p.id === id);
+function actualizarInterfaz() {
+    const lista = document.getElementById('items-carrito');
+    const contador = document.getElementById('contador-carrito');
+    lista.innerHTML = '';
+    let total = 0;
     
-    enCarrito ? enCarrito.cantidad++ : carrito.push({ ...item, quantity: 1 });
-    actualizarInterfaz();
-};
+    carrito.forEach(p => {
+        total += (p.precio * p.cantidad);
+        lista.innerHTML += `
+            <div class="item-en-carrito">
+                <span>${p.nombre} (x${p.cantidad})</span>
+                <span>$${p.precio * p.cantidad}</span>
+            </div>`;
+    });
+    
+    document.getElementById('precio-total').innerText = total;
+    
+    // Animación y conteo del botón superior del carrito
+    let totalItems = carrito.reduce((acc, p) => acc + p.cantidad, 0);
+    contador.innerText = totalItems;
+    contador.classList.add('pop-anim');
+    setTimeout(() => contador.classList.remove('pop-anim'), 200);
+
+    // --- CORRECCIÓN INTEGRADA PARA PAYPAL ---
+    // Si hay productos en el carrito y todavía existe el botón verde viejo, lo cambiamos por el de PayPal
+    if (carrito.length > 0 && document.getElementById('pagar-btn')) {
+        inicializarBotonesPayPal();
+    }
+}
 
 function actualizarInterfaz() {
     const lista = document.getElementById('items-carrito');
