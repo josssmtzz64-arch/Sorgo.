@@ -107,6 +107,7 @@ const productos = [
     }
 ];
 
+
 let carrito = [];
 const contenedor = document.getElementById('contenedor-productos');
 
@@ -233,4 +234,49 @@ document.getElementById('pagar-btn').addEventListener('click', () => {
 window.addEventListener('DOMContentLoaded', () => {
     controlarIntro();
     mostrarProductos();
+});
+
+// --- FUNCIÓN PARA ABRIR/CERRAR EL CARRITO EN CELULAR ---
+window.toggleCarrito = () => {
+    const carritoPanel = document.getElementById('carrito-panel');
+    if (carritoPanel) {
+        carritoPanel.classList.toggle('activo');
+    }
+};
+
+
+
+// --- OPTIMIZACIÓN DE TOQUE (TOUCH) PARA CELULARES ---
+// Detecta si el usuario está en un celular para activar el cambio de frente/vuelta con un "Tap"
+function habilitarTouchParaCelular() {
+    // Buscamos todos los contenedores de fotos de playeras
+    const wrappers = document.querySelectorAll('.producto-media-wrapper');
+    
+    wrappers.forEach(wrapper => {
+        wrapper.addEventListener('click', (e) => {
+            // Si el usuario da clic en el botón de agregar, no hacemos el cambio de imagen
+            if (e.target.classList.contains('btn-agregar')) return;
+
+            // En celulares, un toque rápido alternará el frente y la espalda
+            if (window.innerWidth <= 768) {
+                const frente = wrapper.querySelector('.producto-media.frente');
+                const reverso = wrapper.querySelector('.producto-media.reverso');
+                
+                if (reverso && reverso.style.opacity === "1") {
+                    frente.style.opacity = "1";
+                    reverso.style.opacity = "0";
+                } else if (reverso) {
+                    frente.style.opacity = "0";
+                    reverso.style.opacity = "1";
+                }
+            }
+        });
+    });
+}
+
+// Modificamos la inicialización al final de tu script.js para que corra esta función
+window.addEventListener('DOMContentLoaded', () => {
+    controlarIntro();
+    mostrarProductos();
+    habilitarTouchParaCelular(); // <--- Añade esta línea
 });
