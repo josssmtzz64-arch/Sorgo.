@@ -195,6 +195,16 @@ function actualizarInterfaz() {
     contador.innerText = totalItems;
     contador.classList.add('pop-anim');
     setTimeout(() => contador.classList.remove('pop-anim'), 200);
+
+    // --- CARGA SEGURA DE PAYPAL ---
+    // Si el carrito tiene cosas y la cajita de PayPal está vacía, dibujamos los botones una sola vez
+    const contenedorBoton = document.getElementById('paypal-button-container');
+    if (carrito.length > 0 && contenedorBoton && contenedorBoton.innerHTML === "") {
+        inicializarBotonesPayPal();
+    } else if (carrito.length === 0 && contenedorBoton) {
+        // Si vacían el carrito, limpiamos los botones
+        contenedorBoton.innerHTML = "";
+    }
 }
 
 // --- 6. SERVICIO PERSONALIZADO ---
