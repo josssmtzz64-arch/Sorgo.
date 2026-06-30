@@ -97,10 +97,10 @@ const productos = [
         esVideo: false 
     },
     { 
-        id: 6, 
+        id: 7, 
         nombre: "Playera DANDADAN | All-Characthers Drop ", 
         categoria: "Playeras premium", 
-        precio: 450, 
+        precio: 599, 
         imgFrente: "img/Dandan frente.png", 
         imgReverso: "img/Dadan Reverso.png", 
         esVideo: false 
