@@ -217,17 +217,87 @@ window.agregarDisenoPersonalizado = () => {
     alert("¡Pedido especial añadido con éxito!");
 };
 
-// --- 7. PASARELA DE PAGO (REDIRECCIÓN) ---
-document.getElementById('pagar-btn').addEventListener('click', () => {
-    if (carrito.length > 0) {
-        let totalCompra = parseFloat(document.getElementById('precio-total').innerText);
-        alert(`Redirigiendo a la pasarela segura para pagar $${totalCompra} MXN...`);
-        carrito = [];
-        actualizarInterfaz();
-    } else {
-        alert("No tienes artículos en tu orden actual para proceder al pago.");
+// --- 7. INTEGRACIÓN DE PASARELA DE PAGO REAL CON PAYPAL ---
+
+// Esta función se encarga de pintar los botones oficiales de PayPal adentro del carrito
+function inicializarBotonesPayPal() {
+    // Limpiamos el contenedor del botón por si acaso para que no se duplique
+    const contenedorBoton = document.getElementById('pagar-btn');
+    if (!contenedorBoton) return;
+
+    // Cambiamos el botón viejo por el contenedor oficial de PayPal
+    contenedorBoton.outerHTML = `<div id="paypal-button-container" style="margin-top: 15px; z-index: 10;"></div>`;
+
+    paypal.Buttons({
+        // Configuración del diseño del botón para que combine con la estética de SORGO
+        style: {
+            layout: 'vertical',
+            color:  'black', // Negro premium para mantener la vibra oscura
+            shape:  'rect',
+            label:  'paypal'
+        },
+
+        // 1. Se ejecuta cuando el cliente le da clic al botón de PayPal
+        createOrder: function(data, actions) {
+            let totalCompra = parseFloat(document.getElementById('precio-total').innerText);
+            
+            if (totalCompra <= 0 || carrito.length === 0) {
+                alert("No tienes artículos en tu pedido para proceder al pago.");
+                return false;
+            }
+
+            // Le pasamos el total exacto del carrito a la ventanita de PayPal
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        currency_code: 'MXN',
+                        value: totalCompra.toString()
+                    },
+                    description: "Drop Lab Clothes - SORGO.LAB"
+                }]
+            });
+        },
+
+        // 2. Se ejecuta en automático cuando el banco autoriza el pago del cliente
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(detalles) {
+                // Generamos el código de orden interno único al azar para tu control
+                const numeroAleatorio = Math.floor(1000 + Math.random() * 9000);
+                const codigoOrden = `SRG-${numeroAleatorio}`;
+                
+                // Obtenemos el nombre del comprador que tiene registrado en su PayPal
+                const nombreComprador = detalles.payer.name.given_name;
+
+                // Mostramos el ticket de éxito con su código único en la pantalla
+                alert(`¡PAGO PROCESADO CON ÉXITO, ${nombreComprador.toUpperCase()}! ⚡\n\nTu orden ha sido registrada.\nCódigo de Pedido: #${codigoOrden}\n\nGuardaremos tu diseño y productos en nuestro sistema. ¡Gracias por confiar en SORGO.LAB!`);
+
+                // Vaciamos el carrito de la tienda y cerramos el panel en el cel si estaba abierto
+                carrito = [];
+                actualizarInterfaz();
+                
+                if (window.innerWidth <= 768) {
+                    toggleCarrito();
+                }
+            });
+        },
+
+        // En caso de que ocurra un error con la tarjeta o fondos del cliente
+        onError: function(err) {
+            console.error("Error en la pasarela de PayPal:", err);
+            alert("Hubo un problema al procesar tu pago con PayPal. Verifica tus datos e intenta de nuevo.");
+        }
+    }).render('#paypal-button-container');
+}
+
+// Modificamos ligeramente la actualización de la interfaz para que vigile los botones
+const funcionActualizarInterfazVieja = actualizarInterfaz;
+actualizarInterfaz = function() {
+    funcionActualizarInterfazVieja();
+    // Si el usuario añade cosas y no se han creado los botones, los inicializamos
+    if (!document.getElementById('paypal-button-container') && carrito.length > 0) {
+        inicializarBotonesPayPal();
     }
-});
+};
 
 // --- 8. FUNCIÓN PARA ABRIR/CERRAR EL CARRITO EN CELULAR ---
 window.toggleCarrito = () => {
