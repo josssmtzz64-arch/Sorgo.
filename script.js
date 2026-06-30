@@ -107,7 +107,6 @@ const productos = [
     }
 ];
 
-
 let carrito = [];
 const contenedor = document.getElementById('contenedor-productos');
 
@@ -178,7 +177,7 @@ window.alCarrito = (id) => {
     const item = productos.find(p => p.id === id);
     const enCarrito = carrito.find(p => p.id === id);
     
-    enCarrito ? enCarrito.cantidad++ : carrito.push({ ...item, cantidad: 1 });
+    enCarrito ? enCarrito.cantidad++ : carrito.push({ ...item, quantity: 1 });
     actualizarInterfaz();
 };
 
@@ -230,13 +229,7 @@ document.getElementById('pagar-btn').addEventListener('click', () => {
     }
 });
 
-// --- 8. INICIALIZACIÓN AUTOMÁTICA ---
-window.addEventListener('DOMContentLoaded', () => {
-    controlarIntro();
-    mostrarProductos();
-});
-
-// --- FUNCIÓN PARA ABRIR/CERRAR EL CARRITO EN CELULAR ---
+// --- 8. FUNCIÓN PARA ABRIR/CERRAR EL CARRITO EN CELULAR ---
 window.toggleCarrito = () => {
     const carritoPanel = document.getElementById('carrito-panel');
     if (carritoPanel) {
@@ -244,20 +237,14 @@ window.toggleCarrito = () => {
     }
 };
 
-
-
-// --- OPTIMIZACIÓN DE TOQUE (TOUCH) PARA CELULARES ---
-// Detecta si el usuario está en un celular para activar el cambio de frente/vuelta con un "Tap"
+// --- 9. OPTIMIZACIÓN DE TOQUE (TOUCH) PARA CELULARES ---
 function habilitarTouchParaCelular() {
-    // Buscamos todos los contenedores de fotos de playeras
     const wrappers = document.querySelectorAll('.producto-media-wrapper');
     
     wrappers.forEach(wrapper => {
         wrapper.addEventListener('click', (e) => {
-            // Si el usuario da clic en el botón de agregar, no hacemos el cambio de imagen
             if (e.target.classList.contains('btn-agregar')) return;
 
-            // En celulares, un toque rápido alternará el frente y la espalda
             if (window.innerWidth <= 768) {
                 const frente = wrapper.querySelector('.producto-media.frente');
                 const reverso = wrapper.querySelector('.producto-media.reverso');
@@ -274,9 +261,9 @@ function habilitarTouchParaCelular() {
     });
 }
 
-// Modificamos la inicialización al final de tu script.js para que corra esta función
+// --- 10. UNICA INICIALIZACIÓN AUTOMÁTICA ---
 window.addEventListener('DOMContentLoaded', () => {
     controlarIntro();
     mostrarProductos();
-    habilitarTouchParaCelular(); // <--- Añade esta línea
+    habilitarTouchParaCelular();
 });
