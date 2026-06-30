@@ -7,7 +7,6 @@ function controlarIntro() {
     const tiempoEstablecido = 24; 
     let tiempoCorriendo = 0;
 
-    // Reloj de alta precisión que actualiza la barra cada 100ms
     const relojCarga = setInterval(() => {
         tiempoCorriendo += 0.1;
         let porcentajeActual = (tiempoCorriendo / tiempoEstablecido) * 100;
@@ -16,7 +15,6 @@ function controlarIntro() {
             barra.style.width = `${porcentajeActual}%`;
         }
 
-        // Al cumplir los 24 segundos exactos
         if (tiempoCorriendo >= tiempoEstablecido) {
             clearInterval(relojCarga);
             dispararTransicionApertura();
@@ -24,14 +22,11 @@ function controlarIntro() {
     }, 100);
 
     function dispararTransicionApertura() {
-        // Fase 1: Desvanecer el video y el texto del centro
         introContent.style.opacity = '0';
 
-        // Fase 2: Las compuertas se parten a la mitad hacia los lados
         setTimeout(() => {
             introScreen.classList.add('abrir');
             
-            // Fase 3: Al terminar de abrirse las hojas (1.6s), quitamos el bloque de la intro
             setTimeout(() => {
                 introScreen.style.display = 'none';
             }, 1600);
@@ -118,13 +113,11 @@ function mostrarProductos() {
         
         let elementoVisual = "";
         if (p.esVideo) {
-            // Estructura especial para video continuo de la taza
             elementoVisual = `
                 <div class="producto-media-wrapper" onclick="abrirVisor(${p.id})">
                     <video src="${p.imgFrente}" autoplay loop muted playsinline class="producto-media frente"></video>
                 </div>`;
         } else {
-            // Estructura de doble vista interactiva (Frente/Espalda) para playeras y cuadros
             elementoVisual = `
                 <div class="producto-media-wrapper" onclick="abrirVisor(${p.id})">
                     <img src="${p.imgFrente}" class="producto-media frente" alt="${p.nombre} Frente" loading="lazy">
@@ -143,9 +136,10 @@ function mostrarProductos() {
     });
 }
 
-// --- 4. VISOR DE ALTA DEFINICIÓN (MODAL EN GRANDE LADO A LADO) ---
+// --- 4. VISOR DE ALTA DEFINICIÓN (MODAL) ---
 window.abrirVisor = (id) => {
     const p = productos.find(prod => prod.id === id);
+    if (!p) return;
     const modal = document.getElementById('modal-visor');
     const visorMedia = document.getElementById('visor-media');
     document.getElementById('titulo-visor').innerText = p.nombre;
@@ -155,7 +149,6 @@ window.abrirVisor = (id) => {
     if (p.esVideo) {
         visorMedia.innerHTML = `<video src="${p.imgFrente}" autoplay loop controls class="taza-media-grande"></video>`;
     } else {
-        // En el visor, abrimos frente y espalda juntos lado a lado
         visorMedia.innerHTML = `
             <div class="visor-imagenes-flex">
                 <img src="${p.imgFrente}" class="producto-media-grande">
@@ -166,13 +159,21 @@ window.abrirVisor = (id) => {
     modal.style.display = "flex";
 };
 
-// Cerrar el Visor Grande
 document.querySelector('.cerrar-modal').onclick = () => {
     document.getElementById('modal-visor').style.display = "none";
     document.getElementById('visor-media').innerHTML = '';
 };
 
 // --- 5. LÓGICA DEL CARRITO DE COMPRAS ---
+window.alCarrito = (id) => {
+    const item = productos.find(p => p.id === id);
+    const enCarrito = carrito.find(p => p.id === id);
+    
+    // CORRECCIÓN: Se cambia 'quantity' por 'cantidad' para mantener consistencia
+    enCarrito ? enCarrito.cantidad++ : carrito.push({ ...item, cantidad: 1 });
+    actualizarInterfaz();
+};
+
 function actualizarInterfaz() {
     const lista = document.getElementById('items-carrito');
     const contador = document.getElementById('contador-carrito');
@@ -190,7 +191,6 @@ function actualizarInterfaz() {
     
     document.getElementById('precio-total').innerText = total;
     
-    // Animación y conteo del botón superior del carrito
     let totalItems = carrito.reduce((acc, p) => acc + p.cantidad, 0);
     contador.innerText = totalItems;
     contador.classList.add('pop-anim');
@@ -209,8 +209,7 @@ window.agregarDisenoPersonalizado = () => {
     alert("¡Pedido especial añadido con éxito!");
 };
 
-// --- 7. INTEGRACIÓN DE PASARELA DE PAGO REAL CON PAYPAL ---
-
+// --- 7. INTEGRACIÓN INTEGRAL DE PAYPAL ---
 function inicializarBotonesPayPal() {
     const contenedorBoton = document.getElementById('paypal-button-container');
     if (!contenedorBoton) return;
@@ -258,7 +257,7 @@ function inicializarBotonesPayPal() {
         },
         onError: function(err) {
             console.error("Error en PayPal:", err);
-            alert("Hubo un problema al procesar tu pago con PayPal.");
+            alert("No se pudo completar la transacción. Verifica tus fondos o tarjeta.");
         }
     }).render('#paypal-button-container');
 }
@@ -300,5 +299,5 @@ window.addEventListener('DOMContentLoaded', () => {
     controlarIntro();
     mostrarProductos();
     habilitarTouchParaCelular();
-    inicializarBotonesPayPal(); // <--- Agregamos esta línea aquí para que cargue los botones desde el inicio de forma segura
+    inicializarBotonesPayPal(); // Carga segura en su contenedor propio
 });
