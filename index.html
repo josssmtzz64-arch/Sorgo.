@@ -25,12 +25,13 @@
         </div>
     </div>
 
-<div id="shop-content">
+    <div id="shop-content">
         <header id="main-header">
             <div class="logo">SORGO<span>.</span></div>
             <nav>
                 <a href="#productos">Drops</a>
-                <button id="btn-carrito-toggle">Pedido (<span id="contador-carrito">0</span>)</button>
+                <!-- AJUSTE 1: Se agrega onclick para controlar el carrito en móviles -->
+                <button id="btn-carrito-toggle" onclick="toggleCarrito()">Pedido (<span id="contador-carrito">0</span>)</button>
             </nav>
         </header>
 
@@ -50,15 +51,17 @@
                         </div>
                     </div>
 
-                    </div>
+                </div>
             </section>
 
-            <aside class="carrito-panel">
+            <!-- AJUSTE 2: Se añade el id "carrito-panel" para la animación CSS -->
+            <aside class="carrito-panel" id="carrito-panel">
                 <div class="carrito-header">
                     <h2>Tu Pedido</h2>
+                    <!-- AJUSTE 3: El botón X para poder ocultar el carrito en el celular -->
+                    <button class="cerrar-carrito-movil" onclick="toggleCarrito()">&times;</button>
                 </div>
-                <div id="items-carrito" class="items-carrito">
-                    </div>
+                <div id="items-carrito" class="items-carrito"></div>
                 <div class="carrito-footer">
                     <div class="total-container">
                         <span>Total:</span>

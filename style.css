@@ -367,3 +367,98 @@ nav a:hover { color: #8a2be2; }
 /* Animación de brinco al contador */
 .pop-anim { transform: scale(1.25); }
 #contador-carrito { display: inline-block; transition: transform 0.2s; }
+
+/* ==========================================
+   A J U S T E S   P A R A   C E L U L A R
+   ========================================== */
+@media (max-width: 768px) {
+    /* Ajustamos la intro para que el video y el logo no se corten */
+    .logo-intro {
+        font-size: 2.8rem;
+        letter-spacing: 6px;
+    }
+    
+    #video-intro {
+        width: 95%;
+    }
+
+    /* Distribución de la tienda: todo en una sola columna */
+    .container {
+        flex-direction: column;
+        padding: 100px 4% 40px 4%;
+        gap: 20px;
+    }
+
+    /* Las playeras se acomodan en 2 columnas en celulares para que se vea como Instagram */
+    .productos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    /* Ajustamos el tamaño de la tarjeta para pantallas chicas */
+    .producto-card {
+        padding: 12px;
+    }
+
+    .producto-media-wrapper {
+        height: 220px; /* Fotos ligeramente más bajas para que quepan dos por fila */
+    }
+
+    .producto-card h3 {
+        font-size: 0.9rem;
+        min-height: 40px;
+    }
+
+    .precio {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .btn-agregar {
+        padding: 8px;
+        font-size: 0.7rem;
+    }
+
+    /* EL CARRITO EN MÓVIL: Se vuelve un panel que sale desde la derecha */
+    .carrito-panel {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Escondido por defecto */
+        width: 85%;
+        height: 100vh;
+        z-index: 2000;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+        transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        background: #0d0d0d;
+    }
+
+    /* Clase que JavaScript activará al tocar el botón del carrito */
+    .carrito-panel.activo {
+        right: 0; /* Aparece en pantalla */
+    }
+
+    .cerrar-carrito-movil {
+        display: block !important;
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    /* El visor en celular muestra las imágenes una arriba de la otra en vez de lado a lado */
+    .visor-imagenes-flex {
+        flex-direction: column;
+        overflow-y: auto;
+        max-height: 70vh;
+        gap: 15px;
+    }
+
+    .producto-media-grande {
+        max-width: 95%;
+        max-height: 40vh;
+    }
+}
+
+/* Ocultar el botón de cerrar carrito en computadora */
+.cerrar-carrito-movil { display: none; }
